@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Поздравление!</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, rgb(92, 31, 74), rgb(160, 92, 139));
+      background-image: linear-gradient(rgb(92, 31, 74, 0.6), rgb(160, 92, 139, 0.6)), url(./img/фон.jpg);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      text-align: center;
+      position: relative;
+    }
+
+    .container {
+      max-width: 800px;
+      padding: 2rem;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeIn 1.5s forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #f8aed7;
+      text-shadow: 0 0 10px rgb(255, 68, 177);
+    }
+
+    .photo {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid #ff44b1;
+      margin: 2rem auto;
+      opacity: 0;
+      transform: scale(0.8);
+      animation: popIn 1s 0.5s forwards;
+    }
+
+    @keyframes popIn {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .message {
+      font-size: 1.4rem;
+      line-height: 1.8;
+      margin: 2rem 0;
+      opacity: 0;
+      animation: slideUp 1s 1s forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .secret-btn {
+      margin-top: 2rem;
+      padding: 12px 24px;
+      background: #ff44b1;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: 0.3s;
+      opacity: 0;
+      animation: fadeIn 1s 1.8s forwards;
+    }
+
+    .secret-btn:hover {
+      background: #802058;
+      transform: scale(1.05);
+    }
+
+    .meme-video {
+      display: none;
+      position: fixed;
+      top: 115%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 80%;
+      max-height: 70vh;
+      width: auto;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      z-index: 1000;
+    }
+
+    .typed-text::after {
+      content: "|";
+      animation: blink 0.7s infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1 id="greeting"></h1>
+    <img src="img/фон.jpg" alt="Твоё фото" class="photo" id="photo">
+    <p class="message" id="message"></p>
+    <button class="secret-btn" id="secretBtn">🌸 Нажми, если скучно! 🌸</button>
+    <video class="meme-video" id="memeVideo" controls>
+      <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+      Ваш браузер не поддерживает видео.
+    </video>
+  </div>
+
+  <audio id="bgMusic" loop>
+    <source src="Мари aka Краймбрери - Happy Birthday, Girl (pesni.fm).mp3" type="audio/mpeg">
+
+  </audio>
+
+  <script>
+    // === Настройки ===
+    const name = "Ира"; // ← поменяй на нужное имя
+    // const photoUrl = "https://via.placeholder.com/200/FFD700/000000?text=" + name; // можно заменить на реальную ссылку
+    const messageText = `Дорогая ${name}! 🎉\n\nС Днём Рождения! Желаю крепкого здоровья, отличного настроения, успехов во всём и много радостных моментов. \n\nПусть рядом будут добрые и верные люди, а каждый день приносит хоть немного счастья. От всего сердца — всего самого лучшего! 💖\n\n`;
+
+    // === Эффект печати текста ===
+    function typeWriter(element, text, speed = 50) {
+      let i = 0;
+      element.textContent = '';
+      const lines = text.split('\n');
+      let currentLine = 0;
+
+      function typeLine() {
+        if (currentLine < lines.length) {
+          if (i < lines[currentLine].length) {
+            element.textContent += lines[currentLine][i];
+            i++;
+            setTimeout(typeLine, speed);
+          } else {
+            element.textContent += '\n';
+            i = 0;
+            currentLine++;
+            setTimeout(typeLine, speed + 100); // пауза между строками
+          }
+        }
+      }
+      typeLine();
+    }
+
+    // === DOM Загрузка ===
+    document.addEventListener('DOMContentLoaded', () => {
+      const greeting = document.getElementById('greeting');
+      const message = document.getElementById('message');
+      // const photo = document.getElementById('photo');
+      const secretBtn = document.getElementById('secretBtn');
+      const memeVideo = document.getElementById('memeVideo');
+      const bgMusic = document.getElementById('bgMusic');
+
+      // Устанавливаем имя
+      greeting.textContent = `Привет, ${name}!`;
+
+      // Меняем фото (если есть реальное — подставь ссылку)
+      // photo.src = photoUrl;
+
+      // Запускаем эффект печати
+      typeWriter(message, messageText);
+
+      // Музыка (автовоспроизведение может быть заблокировано — попробуем)
+      bgMusic.volume = 0.2;
+      bgMusic.play().catch(e => console.log("Автовоспроизведение отключено:", e));
+
+      // Секретная кнопка
+      secretBtn.addEventListener('click', () => {
+        if (memeVideo.style.display === 'block') {
+          memeVideo.style.display = 'none';
+          secretBtn.textContent = "🌸 Нажми, если скучно! 🌸";
+        } else {
+          memeVideo.style.display = 'block';
+          memeVideo.play();
+          secretBtn.textContent = "Спрячь видео! 💞";
+        }
+      });
+    });
+  </script>
+
+</body>
+
+</html>
