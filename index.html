@@ -5,168 +5,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Поздравление!</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, rgb(92, 31, 74), rgb(160, 92, 139));
-      background-image: linear-gradient(rgb(92, 31, 74, 0.6), rgb(160, 92, 139, 0.6)), url(./img/фон.jpg);
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      position: relative;
-    }
-
-    .container {
-      max-width: 800px;
-      padding: 2rem;
-      opacity: 0;
-      transform: translateY(30px);
-      animation: fadeIn 1.5s forwards;
-    }
-
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: #f8aed7;
-      text-shadow: 0 0 10px rgb(255, 68, 177);
-    }
-
-    .photo {
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 5px solid #ff44b1;
-      margin: 2rem auto;
-      opacity: 0;
-      transform: scale(0.8);
-      animation: popIn 1s 0.5s forwards;
-    }
-
-    @keyframes popIn {
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    .message {
-      font-size: 1.4rem;
-      line-height: 1.8;
-      margin: 2rem 0;
-      opacity: 0;
-      animation: slideUp 1s 1s forwards;
-    }
-
-    @keyframes slideUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .secret-btn {
-      margin-top: 2rem;
-      padding: 12px 24px;
-      background: #ff44b1;
-      color: white;
-      border: none;
-      border-radius: 30px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: 0.3s;
-      opacity: 0;
-      animation: fadeIn 1s 1.8s forwards;
-    }
-
-    .secret-btn:hover {
-      background: #802058;
-      transform: scale(1.05);
-    }
-
-    .meme-video {
-      display: none;
-      position: fixed;
-      top: 115%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      max-width: 80%;
-      max-height: 70vh;
-      width: auto;
-      height: auto;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-      z-index: 1000;
-    }
-
-    .typed-text::after {
-      content: "|";
-      animation: blink 0.7s infinite;
-    }
-
-    @keyframes blink {
-
-      0%,
-      100% {
-        opacity: 1;
-      }
-
-      50% {
-        opacity: 0;
-      }
-    }
-
-    #playMusicBtn {
-      margin: 1.5rem auto;
-      padding: 10px 20px;
-      background: #ff44b1;
-      color: white;
-      border: none;
-      border-radius: 30px;
-      font-size: 1rem;
-      cursor: pointer;
-      z-index: 500;
-      box-shadow: 0 0 10px rgb(255, 68, 177);
-      display: block;
-      width: fit-content;
-      transition: 0.3s ease;
-    }
-
-    #playMusicBtn:hover{
-      background: #802058;
-      transform: scale(1.05);
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
   <div class="container">
     <h1 id="greeting"></h1>
-    <img src="img/фон.jpg" alt="Твоё фото" class="photo" id="photo">
+    <img src="img/кружок.jpg" alt="Твоё фото" class="photo" id="photo">
     <button id="playMusicBtn">▶️ Включить музыку</button>
     <p class="message" id="message"></p>
-    <button class="secret-btn" id="secretBtn">🌸 Нажми, если скучно! 🌸</button>
-    <video class="meme-video" id="memeVideo" controls>
-      <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-      Ваш браузер не поддерживает видео.
-    </video>
+    <button class="secret-btn" id="secretBtn">🌸 Нажми! 🌸</button>
+  </div>
+  <!-- Модальное окно для видео -->
+  <div id="videoModal">
+    <div class="modal-content">
+      <span id="closeVideo">&times;</span>
+      <video id="memeVideo" controls>
+        <source src="img/видео.mp4" type="video/mp4">
+        Ваш браузер не поддерживает видео.
+      </video>
+    </div>
   </div>
 
   <audio id="bgMusic" loop>
@@ -206,10 +64,14 @@
     document.addEventListener('DOMContentLoaded', () => {
       const greeting = document.getElementById('greeting');
       const message = document.getElementById('message');
-      const secretBtn = document.getElementById('secretBtn');
-      const memeVideo = document.getElementById('memeVideo');
       const bgMusic = document.getElementById('bgMusic');
       const playMusicBtn = document.getElementById('playMusicBtn');
+
+      const container = document.querySelector('.container');
+      const videoModal = document.getElementById('videoModal');
+      const memeVideo = document.getElementById('memeVideo');
+      const closeVideo = document.getElementById('closeVideo');
+      const secretBtn = document.getElementById('secretBtn');
 
       // Устанавливаем имя
       greeting.textContent = `Привет, ${name}!`;
@@ -236,17 +98,29 @@
           });
       });
 
-      // Секретная кнопка
+      // === Секретная кнопка: открывает видео ===
       secretBtn.addEventListener('click', () => {
-        if (memeVideo.style.display === 'block') {
-          memeVideo.style.display = 'none';
-          secretBtn.textContent = "🌸 Нажми, если скучно! 🌸";
-        } else {
-          memeVideo.style.display = 'block';
-          memeVideo.play();
-          secretBtn.textContent = "Спрячь видео! 💞";
-        }
+        videoModal.style.display = 'flex'; // показываем модальное окно
+        memeVideo.play();
+        container.style.display = 'none'; // скрываем контент
+        secretBtn.textContent = "Спрячь видео! 💞";
       });
+
+      // === Крестик: закрывает видео ===
+      closeVideo.addEventListener('click', () => {
+        videoModal.style.display = 'none'; // скрываем модальное окно
+        memeVideo.pause();
+        memeVideo.currentTime = 0; // сбрасываем видео
+        container.style.display = 'block'; // возвращаем контент
+        secretBtn.textContent = "🌸 Нажми! 🌸";
+      });
+
+      // === Закрытие по клику на фон (опционально) ===
+      // videoModal.addEventListener('click', (e) => {
+      //   if (e.target === videoModal) {
+      //     closeVideo.click(); // как будто нажали на крестик
+      //   }
+      // });
     });
   </script>
 
